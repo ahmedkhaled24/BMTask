@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BM_Task</string>
+    <string name="details">Details</string>
 </resources>
