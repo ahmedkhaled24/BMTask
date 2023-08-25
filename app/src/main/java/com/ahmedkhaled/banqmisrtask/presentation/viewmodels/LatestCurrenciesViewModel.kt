@@ -4,7 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.ahmedkhaled.banqmisrtask.data.model.custom.CustomCurrenciesModel
+import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesItems
+import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesModel
 import com.ahmedkhaled.banqmisrtask.domain.usecases.LatestCurrenciesUseCase
 import com.ahmedkhaled.banqmisrtask.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,9 +16,9 @@ import javax.inject.Inject
 class LatestCurrenciesViewModel @Inject constructor(private val latestCurUseCase: LatestCurrenciesUseCase)
     : ViewModel() {
 
-    private val _latestCurrenciesState: MutableLiveData<Resource<CustomCurrenciesModel>> =
+    private val _latestCurrenciesState: MutableLiveData<Resource<CurrenciesModel>> =
         MutableLiveData()
-    val latestCurrenciesData: LiveData<Resource<CustomCurrenciesModel>> = _latestCurrenciesState
+    val latestCurrenciesData: LiveData<Resource<CurrenciesModel>> = _latestCurrenciesState
 
 
     init {
@@ -31,4 +32,14 @@ class LatestCurrenciesViewModel @Inject constructor(private val latestCurUseCase
             }
         }
     }
+
+    private val _selectedItem = MutableLiveData<CurrenciesItems>()
+    val selectedItem: LiveData<CurrenciesItems>
+        get() = _selectedItem
+
+    fun onItemSelected(item: CurrenciesItems) {
+        _selectedItem.value = item
+        // Perform business logic based on the selected item
+    }
+
 }

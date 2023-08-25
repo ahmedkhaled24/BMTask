@@ -3,11 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/my_nav"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@id/currenciesFragment">
 
     <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.ahmedkhaled.banqmisrtask.presentation.ui.HomeFragment"
-        android:label="fragment_home"
-        tools:layout="@layout/fragment_home" />
+        android:id="@+id/currenciesFragment"
+        android:name="com.ahmedkhaled.banqmisrtask.presentation.ui.CurrenciesFragment"
+        android:label="fragment_currencies"
+        tools:layout="@layout/fragment_currencies" />
+
 </navigation>
