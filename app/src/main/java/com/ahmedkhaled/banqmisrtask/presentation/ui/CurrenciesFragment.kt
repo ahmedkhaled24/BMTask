@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
+import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.ahmedkhaled.banqmisrtask.R
@@ -15,11 +16,9 @@ import com.ahmedkhaled.banqmisrtask.databinding.FragmentCurrenciesBinding
 import com.ahmedkhaled.banqmisrtask.presentation.adapters.SpinnerFromAdapter
 import com.ahmedkhaled.banqmisrtask.presentation.adapters.SpinnerToAdapter
 import com.ahmedkhaled.banqmisrtask.presentation.viewmodels.LatestCurrenciesViewModel
+import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing.oneDigit
 import com.ahmedkhaled.banqmisrtask.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
-import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.Locale
 
 private const val TAG = "TAGCurrenciesFragment"
 @AndroidEntryPoint
@@ -27,7 +26,6 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     private lateinit var binding: FragmentCurrenciesBinding
     private val viewModel: LatestCurrenciesViewModel by viewModels()
-    private var valueEUR = 0.0
     private var valueFirstSelectedItem = 1.0
     private var valueSecondSelectedItem = 1.0
 
@@ -38,31 +36,34 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initResponseApi()
-//        observeOnSelectedItemSpinnerFrom()
     }
 
-    private fun observeOnSelectedItemSpinnerFrom() {
-        viewModel.selectedItem.observe(viewLifecycleOwner) { item ->
-            binding.editTextFromCurrency.setText("1")
-            binding.editTextToCurrency.hint = (item.rate.toString())
-        }
-    }
+//    private fun observeOnSelectedItemSpinnerFrom() {
+//        viewModel.selectedItem.observe(viewLifecycleOwner) { item ->
+//            binding.editTextFromCurrency.setText("1")
+//            binding.editTextToCurrency.hint = (item.rate.toString())
+//        }
+//    }
 
     private fun initResponseApi() {
-        //init viewModel to receiving the response
         viewModel.latestCurrenciesData.observe(viewLifecycleOwner) {
             when (it) {
-                is Resource.Loading -> {}
+                is Resource.Loading -> {
+                    showProgressOrHide(true)
+                }
 
                 is Resource.Success -> {
                     Log.d(TAG, "onViewCreated: Success")
+                    showProgressOrHide(false)
                     configSpinnerFrom(it.data!!.data)
                     configSpinnerTo(it.data.data)
-                    valueEUR = it.data.data[1].rate
+                    listenValues()
                 }
 
                 is Resource.Error -> {
+                    showProgressOrHide(false)
                     showToast(it.message!!)
                 }
             }
@@ -76,16 +77,9 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun configSpinnerTo(data: MutableList<CurrenciesItems>) {
-//        if (data.size >= 2) {
-//            val temp = data[0]
-//            data[0] = data[1]
-//            data[1] = temp
-//        }
-
         val adapter2 = SpinnerToAdapter(requireContext(), data)
         binding.spinnerToCurrency.adapter = adapter2
         binding.spinnerToCurrency.onItemSelectedListener = this
-
         binding.spinnerFromCurrency.setSelection(1)
     }
 
@@ -97,28 +91,21 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
                 valueFirstSelectedItem = item.rate
                 binding.editTextFromCurrency.setText("1")
+                binding.editTextFromCurrency.hint = "1"
+                binding.editTextToCurrency.setText(oneDigit((valueSecondSelectedItem/item.rate)))
                 binding.editTextToCurrency.hint = oneDigit((valueSecondSelectedItem/item.rate))
-
-
-                Log.d(TAG, "onItemSelected1 valueSecondSelectedItem: $valueSecondSelectedItem")
-                Log.d(TAG, "onItemSelected1 valueEUR: ${item.rate}")
-                Log.d(TAG, "onItemSelected1 editTextFromCurrency: ${binding.editTextFromCurrency.text}")
-                Log.d(TAG, "onItemSelected1 total: ${oneDigit((valueSecondSelectedItem/item.rate)*binding.editTextFromCurrency.text.toString().toDouble())}")
-
             }
 
             R.id.spinnerToCurrency -> {
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
                 valueSecondSelectedItem = item.rate
-//                binding.editTextFromCurrency.setText("1")
-                Log.d(TAG, "onItemSelected ----------------------")
-                Log.d(TAG, "onItemSelected2 valueSecondSelectedItem: $valueSecondSelectedItem")
-                Log.d(TAG, "onItemSelected2 valueEUR: $valueEUR")
-                Log.d(TAG, "onItemSelected2 editTextFromCurrency: ${binding.editTextFromCurrency.text}")
-                Log.d(TAG, "onItemSelected2 total: ${oneDigit((valueSecondSelectedItem/valueEUR)*binding.editTextFromCurrency.text.toString().toDouble())}")
-
-                binding.editTextToCurrency.hint = oneDigit((valueSecondSelectedItem/valueFirstSelectedItem)*binding.editTextFromCurrency.text.toString().toDouble())
-
+                if (!binding.editTextFromCurrency.text.isNullOrEmpty()){
+                    binding.editTextToCurrency.setText(oneDigit((valueSecondSelectedItem/valueFirstSelectedItem)*binding.editTextFromCurrency.text.toString().toDouble()))
+                    binding.editTextToCurrency.hint = oneDigit((valueSecondSelectedItem/valueFirstSelectedItem)*binding.editTextFromCurrency.text.toString().toDouble())
+                } else {
+                    binding.editTextToCurrency.setText(oneDigit((valueSecondSelectedItem/valueFirstSelectedItem)))
+                    binding.editTextToCurrency.hint = oneDigit((valueSecondSelectedItem/valueFirstSelectedItem))
+                }
             }
         }
 
@@ -126,15 +113,55 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     override fun onNothingSelected(p0: AdapterView<*>?) {}
 
 
+    private fun listenValues() {
+        val et1 = binding.editTextFromCurrency
+        val et2 = binding.editTextToCurrency
+
+        val onKeyListener = View.OnKeyListener { v, _, _ ->
+            val s = (v as EditText).text.toString()
+            if (v == et1) {
+                if (s.isNotEmpty()) {
+                    if (s[0].toString() == "0") {
+                        et1.text.clear()
+                    } else {
+                        et2.setText(oneDigit(et1.text.toString().toDouble() * (valueSecondSelectedItem/valueFirstSelectedItem)))
+                    }
+                } else {
+                    et2.setText(oneDigit(valueSecondSelectedItem/valueFirstSelectedItem))
+                }
+
+            } else {
+
+                if (s.isNotEmpty()) {
+                    if (s[0].toString() == "0") {
+                        et1.setText("1")
+                        et2.text.clear()
+                    } else {
+                        Log.d(TAG, "listenValues: $valueFirstSelectedItem")
+                        Log.d(TAG, "listenValues: $valueSecondSelectedItem")
+                        Log.d(TAG, "listenValues ---------------------")
+                        et1.setText(oneDigit(et2.text.toString().toDouble()/(valueSecondSelectedItem/valueFirstSelectedItem)))
+                    }
+                } else {
+                    et1.setText("1")
+                }
+            }
+            false
+        }
+        et1.setOnKeyListener(onKeyListener)
+        et2.setOnKeyListener(onKeyListener)
+    }
+
     private fun showToast(msg: String) {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
-    private fun oneDigit(num: Double): String {
-        val nf = NumberFormat.getCurrencyInstance(Locale.ENGLISH)
-        val dd = nf as DecimalFormat
-        dd.applyPattern("#.###")
-        return dd.format(num)
+    private fun showProgressOrHide(status: Boolean) {
+        if (status)
+            binding.progress.root.visibility = View.VISIBLE
+        else
+            binding.progress.root.visibility = View.GONE
     }
+
+
 }
-//"${String.format("%.2f", 1.0/item.RAW.USD.PRICE)} ${item.CoinInfo.FullName} equals"
