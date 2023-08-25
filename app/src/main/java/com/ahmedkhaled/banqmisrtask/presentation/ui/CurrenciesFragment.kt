@@ -1,7 +1,6 @@
 package com.ahmedkhaled.banqmisrtask.presentation.ui
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +27,8 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val viewModel: LatestCurrenciesViewModel by viewModels()
     private var valueFirstSelectedItem = 1.0
     private var valueSecondSelectedItem = 1.0
+    private var positionSpinnerItemOne: Int? = null
+    private var positionSpinnerItemTwo: Int? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCurrenciesBinding.inflate(layoutInflater, container, false)
@@ -38,6 +39,10 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         super.onViewCreated(view, savedInstanceState)
 
         initResponseApi()
+
+        binding.replaceIconIv.setOnClickListener {
+            replaceSpinners()
+        }
     }
 
 //    private fun observeOnSelectedItemSpinnerFrom() {
@@ -55,7 +60,6 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
 
                 is Resource.Success -> {
-                    Log.d(TAG, "onViewCreated: Success")
                     showProgressOrHide(false)
                     configSpinnerFrom(it.data!!.data)
                     configSpinnerTo(it.data.data)
@@ -84,10 +88,11 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
 
-    override fun onItemSelected(parent: AdapterView<*>?, p1: View?, p2: Int, p3: Long) {
+    override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
 
         when(parent?.id){
             R.id.spinnerFromCurrency -> {
+                positionSpinnerItemOne = position
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
                 valueFirstSelectedItem = item.rate
                 binding.editTextFromCurrency.setText("1")
@@ -97,6 +102,7 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
 
             R.id.spinnerToCurrency -> {
+                positionSpinnerItemTwo = position
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
                 valueSecondSelectedItem = item.rate
                 if (!binding.editTextFromCurrency.text.isNullOrEmpty()){
@@ -129,17 +135,12 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 } else {
                     et2.setText(oneDigit(valueSecondSelectedItem/valueFirstSelectedItem))
                 }
-
             } else {
-
                 if (s.isNotEmpty()) {
                     if (s[0].toString() == "0") {
                         et1.setText("1")
                         et2.text.clear()
                     } else {
-                        Log.d(TAG, "listenValues: $valueFirstSelectedItem")
-                        Log.d(TAG, "listenValues: $valueSecondSelectedItem")
-                        Log.d(TAG, "listenValues ---------------------")
                         et1.setText(oneDigit(et2.text.toString().toDouble()/(valueSecondSelectedItem/valueFirstSelectedItem)))
                     }
                 } else {
@@ -150,6 +151,11 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         }
         et1.setOnKeyListener(onKeyListener)
         et2.setOnKeyListener(onKeyListener)
+    }
+
+    private fun replaceSpinners(){
+        binding.spinnerFromCurrency.setSelection(positionSpinnerItemTwo!!)
+        binding.spinnerToCurrency.setSelection(positionSpinnerItemOne!!)
     }
 
     private fun showToast(msg: String) {

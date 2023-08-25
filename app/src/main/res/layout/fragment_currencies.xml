@@ -31,7 +31,7 @@
 
 
         <ImageView
-            android:id="@+id/imageView"
+            android:id="@+id/replaceIconIv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="@dimen/_6sdp"
@@ -51,7 +51,7 @@
             android:textAlignment="center"
             android:backgroundTint="@color/black"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/imageView"
+            app:layout_constraintEnd_toStartOf="@+id/replaceIconIv"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/cardView"
             app:layout_constraintVertical_bias="0.13999999" />
@@ -67,7 +67,7 @@
             android:backgroundTint="@color/black"
             app:layout_constraintBottom_toBottomOf="@+id/spinnerFromCurrency"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/imageView"
+            app:layout_constraintStart_toEndOf="@+id/replaceIconIv"
             app:layout_constraintTop_toTopOf="@+id/spinnerFromCurrency" />
 
 
