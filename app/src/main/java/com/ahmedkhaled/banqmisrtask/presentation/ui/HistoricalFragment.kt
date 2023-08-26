@@ -83,6 +83,10 @@ class HistoricalFragment : Fragment() {
 
                 is Resource.Success -> {
                     processingOnResponseLast3DaysData(it.data!!.date, it.data.data)
+                    counterCallApiLastDays +=1
+                    if (counterCallApiLastDays<arr3days.size){
+                        viewModel.historicalData(arr3days[counterCallApiLastDays])
+                    }
                 }
 
                 is Resource.Error -> {
@@ -95,18 +99,11 @@ class HistoricalFragment : Fragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun processingOnResponseLast3DaysData(date: String, data: MutableList<CurrenciesItems>) {
-//        val positionFirstItem = data.indexOfFirst { it.name == args.firstCurrency }
-//        val positionSecondItem = data.indexOfFirst { it.name == args.secondCurrency }
-
         val result = NumberProcessing.oneDigit(data[args.positionSecondItem].rate / data[args.positionFirstItem].rate)
         arrLast3Day.add(DataLast3Days(date, "$result ${data[args.positionSecondItem].name}"))
 
         val dataLast3DaysSorted = sortDatesDescending(arrLast3Day)
         last3DaysAdapter.differ.submitList(dataLast3DaysSorted)
-        counterCallApiLastDays +=1
-        if (counterCallApiLastDays<arr3days.size){
-            viewModel.historicalData(arr3days[counterCallApiLastDays])
-        }
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
