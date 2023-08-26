@@ -9,6 +9,7 @@ import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.Toast
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.ahmedkhaled.banqmisrtask.R
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesItems
 import com.ahmedkhaled.banqmisrtask.databinding.FragmentCurrenciesBinding
@@ -29,6 +30,7 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private var valueSecondSelectedItem = 1.0
     private var positionSpinnerItemOne: Int? = null
     private var positionSpinnerItemTwo: Int? = null
+    private var nameFirstCurrency: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentCurrenciesBinding.inflate(layoutInflater, container, false)
@@ -41,7 +43,14 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         initResponseApi()
 
         binding.replaceIconIv.setOnClickListener {
+            binding.replaceIconIv.rotation = 180f
             replaceSpinners()
+        }
+
+        binding.btnDetails.setOnClickListener {
+            findNavController().navigate(CurrenciesFragmentDirections.actionCurrenciesFragmentToHistoricalFragment(
+                nameFirstCurrency, positionSpinnerItemOne!!, positionSpinnerItemTwo!!
+            ))
         }
     }
 
@@ -94,6 +103,7 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
             R.id.spinnerFromCurrency -> {
                 positionSpinnerItemOne = position
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
+                nameFirstCurrency = item.name
                 valueFirstSelectedItem = item.rate
                 binding.editTextFromCurrency.setText("1")
                 binding.editTextFromCurrency.hint = "1"

@@ -4,26 +4,25 @@ import android.util.Log
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesItems
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesModel
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesNames
-import com.ahmedkhaled.banqmisrtask.data.model.custom.CustomCurrenciesModel
 import com.ahmedkhaled.banqmisrtask.data.model.response.LatestCurrenciesResponse
 import com.ahmedkhaled.banqmisrtask.data.model.response.Rates
-import com.ahmedkhaled.banqmisrtask.domain.repository.CurrenciesApIRepo
+import com.ahmedkhaled.banqmisrtask.domain.repository.HistoricalDataApIRepo
 import com.ahmedkhaled.banqmisrtask.utils.Resource
 import kotlinx.coroutines.flow.flow
 import retrofit2.HttpException
 import java.io.IOException
 import javax.inject.Inject
 
-private const val TAG = "TAGLatestCur"
-class LatestCurrenciesUseCase @Inject constructor(private val repository: CurrenciesApIRepo) {
+private const val TAG = "TAGHistoricalData"
 
-    operator fun invoke() = flow {
+class HistoricalDataUseCase @Inject constructor(private val repository: HistoricalDataApIRepo)  {
+
+    operator fun invoke(date: String) = flow {
         try {
             emit(Resource.Loading())
-            val response = repository.latestCurrencies()
+            val response = repository.historicalData(date)
             Log.d(TAG, "invoke: ${response.rates.USD}")
             if (response.success){
-//                emit(Resource.Success(data = fillLatestCurrenciesResponse(response)))
                 emit(Resource.Success(data = fillCurrenciesData(response)))
             } else
                 emit(Resource.Error("Something went wrong"))
@@ -38,7 +37,7 @@ class LatestCurrenciesUseCase @Inject constructor(private val repository: Curren
     }
 
     private fun fillCurrenciesData(response: LatestCurrenciesResponse): CurrenciesModel {
-        return CurrenciesModel(response.base, response.date, fillRates(response.rates))
+        return CurrenciesModel(response.base, response.date, fillRates(response.rates), response.historical)
     }
 
     private fun fillRates(rates: Rates): MutableList<CurrenciesItems> {
@@ -56,4 +55,5 @@ class LatestCurrenciesUseCase @Inject constructor(private val repository: Curren
 
         return arr
     }
+
 }

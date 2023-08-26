@@ -33,13 +33,13 @@ class LatestCurrenciesViewModel @Inject constructor(private val latestCurUseCase
         }
     }
 
-    private val _selectedItem = MutableLiveData<CurrenciesItems>()
-    val selectedItem: LiveData<CurrenciesItems>
-        get() = _selectedItem
-
-    fun onItemSelected(item: CurrenciesItems) {
-        _selectedItem.value = item
-        // Perform business logic based on the selected item
-    }
+//    private val _selectedItem = MutableLiveData<CurrenciesItems>()
+//    val selectedItem: LiveData<CurrenciesItems>
+//        get() = _selectedItem
+//
+//    fun onItemSelected(item: CurrenciesItems) {
+//        _selectedItem.value = item
+//        // Perform business logic based on the selected item
+//    }
 
 }

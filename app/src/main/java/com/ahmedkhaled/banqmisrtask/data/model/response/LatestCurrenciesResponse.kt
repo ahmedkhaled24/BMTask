@@ -8,6 +8,9 @@ data class LatestCurrenciesResponse(
     @SerializedName("success")
     val success: Boolean,
     @Expose
+    @SerializedName("historical")
+    val historical: Boolean? = null,
+    @Expose
     @SerializedName("timestamp")
     val timestamp: Int,
     @Expose

@@ -9,6 +9,28 @@
         android:id="@+id/currenciesFragment"
         android:name="com.ahmedkhaled.banqmisrtask.presentation.ui.CurrenciesFragment"
         android:label="fragment_currencies"
-        tools:layout="@layout/fragment_currencies" />
+        tools:layout="@layout/fragment_currencies" >
+        <action
+            android:id="@+id/action_currenciesFragment_to_historicalFragment"
+            app:destination="@id/historicalFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/historicalFragment"
+        android:name="com.ahmedkhaled.banqmisrtask.presentation.ui.HistoricalFragment"
+        android:label="HistoricalFragment" >
+
+        <argument
+            android:name="nameFirstCurrency"
+            app:argType="string" />
+
+        <argument
+            android:name="positionFirstItem"
+            app:argType="integer" />
+
+        <argument
+            android:name="positionSecondItem"
+            app:argType="integer" />
+    </fragment>
 
 </navigation>

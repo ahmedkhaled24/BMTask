@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">BM_Task</string>
     <string name="details">Details</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="last_3_days">Last 3 days</string>
+    <string name="other_currencies">Other currencies</string>
+    <string name="currencyEqual">1 %s equal</string>
+    <string name="currencyAndName">%s</string>
 </resources>

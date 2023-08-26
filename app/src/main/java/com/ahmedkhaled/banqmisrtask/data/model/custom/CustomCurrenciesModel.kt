@@ -28,6 +28,6 @@ data class CurrenciesNames(
 )
 
 
-data class CurrenciesModel(val base: String, val date: String, val data: MutableList<CurrenciesItems>)
+data class CurrenciesModel(val base: String, val date: String, val data: MutableList<CurrenciesItems>, val historical: Boolean? = null)
 
 class CurrenciesItems(val name: String, val rate: Double)

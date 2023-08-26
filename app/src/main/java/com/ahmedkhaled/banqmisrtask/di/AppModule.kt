@@ -3,8 +3,10 @@ package com.ahmedkhaled.banqmisrtask.di
 import android.app.Application
 import android.content.Context
 import com.ahmedkhaled.banqmisrtask.data.remote.ApiInterface
+import com.ahmedkhaled.banqmisrtask.data.repository.HistoricalDataApiRepoImpl
 import com.ahmedkhaled.banqmisrtask.data.repository.LatestCurrenciesApiRepoImpl
 import com.ahmedkhaled.banqmisrtask.domain.repository.CurrenciesApIRepo
+import com.ahmedkhaled.banqmisrtask.domain.repository.HistoricalDataApIRepo
 import com.ahmedkhaled.banqmisrtask.utils.Constants.BASE_URL
 import dagger.Binds
 import dagger.Module
@@ -42,4 +44,12 @@ abstract class DataPort {
     @Binds
     @Singleton
     abstract fun bindApiRepo(impl: LatestCurrenciesApiRepoImpl): CurrenciesApIRepo
+}
+
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class HistoricalPort {
+    @Binds
+    @Singleton
+    abstract fun bindApiRepo(impl: HistoricalDataApiRepoImpl): HistoricalDataApIRepo
 }
