@@ -10,11 +10,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.ahmedkhaled.banqmisrtask.R
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesItems
-import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesModel
 import com.ahmedkhaled.banqmisrtask.databinding.FragmentHistoricalBinding
 import com.ahmedkhaled.banqmisrtask.presentation.adapters.Last3DaysAdapter
 import com.ahmedkhaled.banqmisrtask.presentation.viewmodels.HistoricalViewModel
@@ -40,7 +40,7 @@ class HistoricalFragment : Fragment() {
     private var todayDate: String = ""
     private val args: HistoricalFragmentArgs by navArgs()
     private lateinit var last3DaysAdapter: Last3DaysAdapter
-    var arrLast3Day: MutableList<DataLast3Days> = ArrayList()
+    private var arrLast3Day: MutableList<DataLast3Days> = ArrayList()
     private var counterCallApiLastDays = 0
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHistoricalBinding.inflate(layoutInflater, container, false)
@@ -112,9 +112,7 @@ class HistoricalFragment : Fragment() {
         val dataLast3DaysSorted = sortDatesDescending(arrLast3Day)
         last3DaysAdapter.differ.submitList(dataLast3DaysSorted)
 
-
         setUpLineChart(dataLast3DaysSorted)
-
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -128,7 +126,6 @@ class HistoricalFragment : Fragment() {
 
 
     private fun setUpLineChart(it: List<DataLast3Days>) {
-        var dataSets: java.util.ArrayList<ILineDataSet?> = java.util.ArrayList()
         val xAxisValues: MutableList<String> = ArrayList()
 
         for (element in it) {
@@ -136,10 +133,10 @@ class HistoricalFragment : Fragment() {
         }
 
         val incomeEntries = getIncomeEntries(it)
-        dataSets = java.util.ArrayList()
+        val dataSets: java.util.ArrayList<ILineDataSet?> = ArrayList()
 
-        val set1 = LineDataSet(incomeEntries, "Prices")
-        set1.color = resources.getColor(R.color.blue)
+        val set1 = LineDataSet(incomeEntries, "Historical Exchange Rate")
+        set1.color = ContextCompat.getColor(requireContext(), R.color.blue)
         set1.valueTextColor = Color.rgb(55, 70, 73)
         set1.valueTextSize = 10f
         set1.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
@@ -163,8 +160,8 @@ class HistoricalFragment : Fragment() {
         set1.lineWidth = 4f
         set1.circleRadius = 3f
         set1.setDrawValues(true)
-        set1.circleHoleColor = resources.getColor(R.color.red)
-        set1.setCircleColor(resources.getColor(R.color.red))
+        set1.circleHoleColor = ContextCompat.getColor(requireContext(), R.color.red)
+        set1.setCircleColor(ContextCompat.getColor(requireContext(), R.color.red))
 
         //String setter in x-Axis
         mLineGraph.xAxis.valueFormatter = IndexAxisValueFormatter(xAxisValues)

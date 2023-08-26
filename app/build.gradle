@@ -37,7 +37,7 @@ android {
 
     buildFeatures {
         dataBinding true
-        viewBinding true
+//        viewBinding true
     }
 }
 
@@ -86,5 +86,4 @@ dependencies {
 
     //MPAndroidChart
     implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
-
 }
