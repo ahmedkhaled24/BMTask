@@ -1,6 +1,7 @@
 package com.ahmedkhaled.banqmisrtask.presentation.ui
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -49,8 +50,7 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         binding.btnDetails.setOnClickListener {
             findNavController().navigate(CurrenciesFragmentDirections.actionCurrenciesFragmentToHistoricalFragment(
-                nameFirstCurrency, positionSpinnerItemOne!!, positionSpinnerItemTwo!!
-            ))
+                nameFirstCurrency, positionSpinnerItemOne!!, positionSpinnerItemTwo!!))
         }
     }
 
@@ -76,8 +76,9 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 }
 
                 is Resource.Error -> {
+                    Log.d(TAG, "initResponseApi: ${it.message}")
                     showProgressOrHide(false)
-                    showToast(it.message!!)
+                    Toast.makeText(requireContext(), it.message!!, Toast.LENGTH_SHORT).show()
                 }
             }
         }
@@ -98,7 +99,6 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
 
     override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-
         when(parent?.id){
             R.id.spinnerFromCurrency -> {
                 positionSpinnerItemOne = position
@@ -168,16 +168,11 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         binding.spinnerToCurrency.setSelection(positionSpinnerItemOne!!)
     }
 
-    private fun showToast(msg: String) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
-    }
-
     private fun showProgressOrHide(status: Boolean) {
         if (status)
             binding.progress.root.visibility = View.VISIBLE
         else
             binding.progress.root.visibility = View.GONE
     }
-
 
 }

@@ -14,19 +14,25 @@ import javax.inject.Inject
 @HiltViewModel
 class HistoricalViewModel @Inject constructor(private val historicalDataUseCase: HistoricalDataUseCase) : ViewModel() {
 
-    private val _historicalDataState: MutableLiveData<Resource<CurrenciesModel>> =
-        MutableLiveData()
+    private val _historicalDataState: MutableLiveData<Resource<CurrenciesModel>> = MutableLiveData()
     val historicalData: LiveData<Resource<CurrenciesModel>> = _historicalDataState
-
-
-//    init {
-//        historicalData()
-//    }
 
     fun historicalData(date: String) {
         viewModelScope.launch {
             historicalDataUseCase(date).collect {
                 _historicalDataState.postValue(it)
+            }
+        }
+    }
+
+
+    private val _otherCurrenciesState: MutableLiveData<Resource<CurrenciesModel>> = MutableLiveData()
+    val otherCurrenciesData: LiveData<Resource<CurrenciesModel>> = _otherCurrenciesState
+
+    fun otherCurrenciesData(todayDate: String) {
+        viewModelScope.launch {
+            historicalDataUseCase(todayDate).collect {
+                _otherCurrenciesState.postValue(it)
             }
         }
     }

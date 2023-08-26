@@ -17,8 +17,10 @@ import com.ahmedkhaled.banqmisrtask.R
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesItems
 import com.ahmedkhaled.banqmisrtask.databinding.FragmentHistoricalBinding
 import com.ahmedkhaled.banqmisrtask.presentation.adapters.Last3DaysAdapter
+import com.ahmedkhaled.banqmisrtask.presentation.adapters.OtherCurrenciesAdapter
 import com.ahmedkhaled.banqmisrtask.presentation.viewmodels.HistoricalViewModel
 import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing
+import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing.oneDigit
 import com.ahmedkhaled.banqmisrtask.utils.Resource
 import com.github.mikephil.charting.components.XAxis
 import com.github.mikephil.charting.data.Entry
@@ -40,7 +42,9 @@ class HistoricalFragment : Fragment() {
     private var todayDate: String = ""
     private val args: HistoricalFragmentArgs by navArgs()
     private lateinit var last3DaysAdapter: Last3DaysAdapter
+    private lateinit var otherCurrenciesAdapter: OtherCurrenciesAdapter
     private var arrLast3Day: MutableList<DataLast3Days> = ArrayList()
+    private var arrOtherCurrencies: MutableList<DataOtherCurrencies> = ArrayList()
     private var counterCallApiLastDays = 0
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentHistoricalBinding.inflate(layoutInflater, container, false)
@@ -53,18 +57,29 @@ class HistoricalFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         getThreePreviousDaysAndCurrent()
-        callApiForGetLast3Days()
-        initResponseApi()
-        //init recycler to display data
+        callApis()
+        initResponseApiForLast3Days()
+        initResponseApiForOtherCurrencies()
+
+        //init recyclers to display data
         setUpRecyclerLast3DaysData()
+        setUpRecyclerOtherCurrencies()
 
         binding.textViewMainCurrency.text = getString(R.string.currencyEqual, args.nameFirstCurrency)
+        binding.textViewMainOtherCurrency.text = getString(R.string.currencyEqual, args.nameFirstCurrency)
     }
 
     private fun setUpRecyclerLast3DaysData() {
         last3DaysAdapter = Last3DaysAdapter()
         binding.recyclerViewLastDays.adapter = last3DaysAdapter
     }
+
+    private fun setUpRecyclerOtherCurrencies() {
+        otherCurrenciesAdapter = OtherCurrenciesAdapter()
+        binding.recyclerViewOtherCurrencies.adapter = otherCurrenciesAdapter
+    }
+
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun getThreePreviousDaysAndCurrent() {
@@ -78,12 +93,13 @@ class HistoricalFragment : Fragment() {
         arr3days = listOf(oneDayAgo, twoDaysAgo, threeDaysAgo)
     }
 
-    private fun callApiForGetLast3Days() {
+    private fun callApis() {
         viewModel.historicalData(arr3days[counterCallApiLastDays])
+        viewModel.otherCurrenciesData(todayDate)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
-    private fun initResponseApi() {
+    private fun initResponseApiForLast3Days() {
         viewModel.historicalData.observe(viewLifecycleOwner) {
             when (it) {
                 is Resource.Loading -> {}
@@ -102,6 +118,32 @@ class HistoricalFragment : Fragment() {
                 }
             }
         }
+    }
+
+    private fun initResponseApiForOtherCurrencies() {
+        viewModel.otherCurrenciesData.observe(viewLifecycleOwner) {
+            when (it) {
+                is Resource.Loading -> {}
+
+                is Resource.Success -> {
+                    processingOtherCurrenciesData(it.data!!.data)
+                }
+
+                is Resource.Error -> {
+                    Log.d(TAG, "initResponseApiForOtherCurrencies Error: ${it.message!!}")
+                }
+            }
+        }
+    }
+
+    private fun processingOtherCurrenciesData(data: MutableList<CurrenciesItems>) {
+        for (i in 0 until data.size) {
+            if (i != args.positionFirstItem)
+                arrOtherCurrencies.add(DataOtherCurrencies(data[i].name,
+                    oneDigit(data[i].rate / data[args.positionFirstItem].rate)))
+        }
+
+        otherCurrenciesAdapter.differ.submitList(arrOtherCurrencies)
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -190,3 +232,4 @@ class HistoricalFragment : Fragment() {
 
 
 data class DataLast3Days(val date: String, val currency: String, val name: String)
+data class DataOtherCurrencies(val name: String, val currency: String)

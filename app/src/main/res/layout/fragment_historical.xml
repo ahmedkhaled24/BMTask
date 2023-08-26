@@ -46,6 +46,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/last_3_days"
+                    android:textSize="@dimen/_13ssp"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <View
@@ -91,6 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/other_currencies"
+                    android:textSize="@dimen/_13ssp"
                     app:layout_constraintStart_toStartOf="parent" />
 
                 <View
@@ -98,9 +100,23 @@
                     android:layout_height="@dimen/_1sdp"
                     android:background="@color/grey"/>
 
+
+                <TextView
+                    android:id="@+id/textViewMainOtherCurrency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="1 USD"
+                    android:textStyle="bold"
+                    android:textSize="@dimen/_13ssp"
+                    android:layout_marginTop="@dimen/_12sdp"
+                    app:layout_constraintStart_toStartOf="parent" />
+
                 <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewOtherCurrencies"
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"/>
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="@dimen/_8sdp"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
             </LinearLayout>
 
 

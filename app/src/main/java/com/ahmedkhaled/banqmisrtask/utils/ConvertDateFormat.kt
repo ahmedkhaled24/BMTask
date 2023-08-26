@@ -1,7 +1,7 @@
 package com.ahmedkhaled.banqmisrtask.utils
 
 import android.os.Build
-import android.support.annotation.RequiresApi
+import androidx.annotation.RequiresApi
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
