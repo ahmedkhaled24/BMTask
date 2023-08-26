@@ -27,7 +27,7 @@ class Last3DaysAdapter : RecyclerView.Adapter<Last3DaysAdapter.Last3DaysViewHold
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(context: Context, item: DataLast3Days) {
             date.text = ConvertDateFormat.date(item.date)
-            currency.text = context.getString(R.string.currencyAndName, item.currency)
+            currency.text = context.getString(R.string.currencyAndName, item.currency + " " + item.name)
         }
     }
 

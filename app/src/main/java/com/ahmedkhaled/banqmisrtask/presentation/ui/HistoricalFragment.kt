@@ -1,5 +1,6 @@
 package com.ahmedkhaled.banqmisrtask.presentation.ui
 
+import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -19,6 +20,12 @@ import com.ahmedkhaled.banqmisrtask.presentation.adapters.Last3DaysAdapter
 import com.ahmedkhaled.banqmisrtask.presentation.viewmodels.HistoricalViewModel
 import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing
 import com.ahmedkhaled.banqmisrtask.utils.Resource
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import dagger.hilt.android.AndroidEntryPoint
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -100,10 +107,14 @@ class HistoricalFragment : Fragment() {
     @RequiresApi(Build.VERSION_CODES.O)
     private fun processingOnResponseLast3DaysData(date: String, data: MutableList<CurrenciesItems>) {
         val result = NumberProcessing.oneDigit(data[args.positionSecondItem].rate / data[args.positionFirstItem].rate)
-        arrLast3Day.add(DataLast3Days(date, "$result ${data[args.positionSecondItem].name}"))
+        arrLast3Day.add(DataLast3Days(date, result, data[args.positionSecondItem].name))
 
         val dataLast3DaysSorted = sortDatesDescending(arrLast3Day)
         last3DaysAdapter.differ.submitList(dataLast3DaysSorted)
+
+
+        setUpLineChart(dataLast3DaysSorted)
+
     }
 
     @RequiresApi(Build.VERSION_CODES.O)
@@ -115,61 +126,70 @@ class HistoricalFragment : Fragment() {
         Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
 
+
+    private fun setUpLineChart(it: List<DataLast3Days>) {
+        var dataSets: java.util.ArrayList<ILineDataSet?> = java.util.ArrayList()
+        val xAxisValues: MutableList<String> = ArrayList()
+
+        for (element in it) {
+            xAxisValues.add(element.date)
+        }
+
+        val incomeEntries = getIncomeEntries(it)
+        dataSets = java.util.ArrayList()
+
+        val set1 = LineDataSet(incomeEntries, "Prices")
+        set1.color = resources.getColor(R.color.blue)
+        set1.valueTextColor = Color.rgb(55, 70, 73)
+        set1.valueTextSize = 10f
+        set1.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
+        dataSets.add(set1)
+
+        //customization
+        val mLineGraph = binding.idChart
+        mLineGraph.setTouchEnabled(true)
+        mLineGraph.isDragEnabled = true
+        mLineGraph.setScaleEnabled(true)
+        mLineGraph.setPinchZoom(false)
+        mLineGraph.setDrawGridBackground(false)
+
+        val xAxis = mLineGraph.xAxis
+        xAxis.granularity = 1f
+        xAxis.setCenterAxisLabels(true)
+        xAxis.isEnabled = true
+        xAxis.setDrawGridLines(false)
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
+
+        set1.lineWidth = 4f
+        set1.circleRadius = 3f
+        set1.setDrawValues(true)
+        set1.circleHoleColor = resources.getColor(R.color.red)
+        set1.setCircleColor(resources.getColor(R.color.red))
+
+        //String setter in x-Axis
+        mLineGraph.xAxis.valueFormatter = IndexAxisValueFormatter(xAxisValues)
+
+        val data = LineData(dataSets)
+        mLineGraph.data = data
+        mLineGraph.animateX(1000)
+        mLineGraph.invalidate()
+        mLineGraph.legend.isEnabled = false
+        mLineGraph.description.isEnabled = false
+    }
+
+    private fun getIncomeEntries(it: List<DataLast3Days>): ArrayList<Entry>{
+        val incomeEntries: ArrayList<Entry> = ArrayList()
+        for (i in it.indices){
+//            incomeEntries.add(Entry((i).toFloat(), it[it.size-(i+1)].close.toFloat()))
+            incomeEntries.add(Entry((i).toFloat(), it[i].currency.toFloat()))
+        }
+        return incomeEntries
+    }
+
+
+
 }
 
 
 
-data class DataLast3Days(val date: String, val currency: String)
-
-
-
-
-//    private fun setUpLineChart(it: MutableList<DataaMarketChartResponse>) {
-//        var dataSets: java.util.ArrayList<ILineDataSet?> = java.util.ArrayList()
-//        val xAxisValues: MutableList<String> = ArrayList()
-//
-//        for (i in 0 until it.size){
-//            xAxisValues.add(getDateTime(it[i].time))
-//        }
-//
-//        val incomeEntries = getIncomeEntries(it)
-//        dataSets = java.util.ArrayList()
-//
-//        val set1 = LineDataSet(incomeEntries, "Prices")
-//        set1.color = resources.getColor(R.color.green)
-//        set1.valueTextColor = Color.rgb(55, 70, 73)
-//        set1.valueTextSize = 10f
-//        set1.mode = LineDataSet.Mode.HORIZONTAL_BEZIER
-//        dataSets.add(set1)
-//
-//        //customization
-//        val mLineGraph = binding.rcashLayout.root.idLineChart
-//        mLineGraph.setTouchEnabled(true)
-//        mLineGraph.isDragEnabled = true
-//        mLineGraph.setScaleEnabled(true)
-//        mLineGraph.setPinchZoom(false)
-//        mLineGraph.setDrawGridBackground(false)
-//
-//        val xAxis = mLineGraph.xAxis
-//        xAxis.granularity = 1f
-//        xAxis.setCenterAxisLabels(true)
-//        xAxis.isEnabled = true
-//        xAxis.setDrawGridLines(false)
-//        xAxis.position = XAxis.XAxisPosition.BOTTOM
-//
-//        set1.lineWidth = 4f
-//        set1.circleRadius = 3f
-//        set1.setDrawValues(true)
-//        set1.circleHoleColor = resources.getColor(R.color.red)
-//        set1.setCircleColor(resources.getColor(R.color.red))
-//
-//        //String setter in x-Axis
-//        mLineGraph.xAxis.valueFormatter = IndexAxisValueFormatter(xAxisValues.reversed())
-//
-//        val data = LineData(dataSets)
-//        mLineGraph.data = data
-//        mLineGraph.animateX(1000)
-//        mLineGraph.invalidate()
-//        mLineGraph.legend.isEnabled = false
-//        mLineGraph.description.isEnabled = false
-//    }
+data class DataLast3Days(val date: String, val currency: String, val name: String)
