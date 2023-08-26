@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import android.widget.EditText
 import android.widget.Toast
@@ -44,7 +45,10 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         initResponseApi()
 
         binding.replaceIconIv.setOnClickListener {
-            binding.replaceIconIv.rotation = 180f
+//            binding.replaceIconIv.rotation = 180f
+            binding.replaceIconIv.startAnimation(
+                AnimationUtils.loadAnimation(requireContext(), R.anim.rotate))
+
             replaceSpinners()
         }
 
@@ -139,6 +143,9 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                 if (s.isNotEmpty()) {
                     if (s[0].toString() == "0") {
                         et1.text.clear()
+                        if (s[0].toString() == "." && s.length>1){
+                            et2.setText(oneDigit(et1.text.toString().toDouble() * (valueSecondSelectedItem/valueFirstSelectedItem)))
+                        }
                     } else {
                         et2.setText(oneDigit(et1.text.toString().toDouble() * (valueSecondSelectedItem/valueFirstSelectedItem)))
                     }
@@ -150,6 +157,9 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
                     if (s[0].toString() == "0") {
                         et1.setText("1")
                         et2.text.clear()
+                        if (s[0].toString() == "." && s.length>1){
+                            et1.setText(oneDigit(et2.text.toString().toDouble()/(valueSecondSelectedItem/valueFirstSelectedItem)))
+                        }
                     } else {
                         et1.setText(oneDigit(et2.text.toString().toDouble()/(valueSecondSelectedItem/valueFirstSelectedItem)))
                     }
