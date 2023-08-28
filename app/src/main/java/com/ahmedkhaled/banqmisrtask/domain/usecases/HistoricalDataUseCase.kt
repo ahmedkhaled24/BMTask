@@ -21,10 +21,9 @@ class HistoricalDataUseCase @Inject constructor(private val repository: Historic
         try {
             emit(Resource.Loading())
             val response = repository.historicalData(date)
-            Log.d(TAG, "invoke: ${response.rates.USD}")
-            if (response.success){
+            if (response.success)
                 emit(Resource.Success(data = fillCurrenciesData(response)))
-            } else
+            else
                 emit(Resource.Error("Something went wrong"))
         } catch (e: HttpException) {
             Log.d(TAG, "error HttpException: ${e.message}")

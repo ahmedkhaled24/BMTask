@@ -46,9 +46,7 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
 
         binding.replaceIconIv.setOnClickListener {
 //            binding.replaceIconIv.rotation = 180f
-            binding.replaceIconIv.startAnimation(
-                AnimationUtils.loadAnimation(requireContext(), R.anim.rotate))
-
+            binding.replaceIconIv.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.rotate))
             replaceSpinners()
         }
 

@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.DiffUtil
 import com.ahmedkhaled.banqmisrtask.R
 import com.ahmedkhaled.banqmisrtask.presentation.ui.DataLast3Days
 import com.ahmedkhaled.banqmisrtask.utils.ConvertDateFormat
+import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing
+import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing.oneDigit
 
 
 class Last3DaysAdapter : RecyclerView.Adapter<Last3DaysAdapter.Last3DaysViewHolder>() {
@@ -27,7 +29,8 @@ class Last3DaysAdapter : RecyclerView.Adapter<Last3DaysAdapter.Last3DaysViewHold
         @RequiresApi(Build.VERSION_CODES.O)
         fun bind(context: Context, item: DataLast3Days) {
             date.text = ConvertDateFormat.date(item.date)
-            currency.text = context.getString(R.string.currencyAndName, item.currency + " " + item.name)
+            currency.text = context.getString(R.string.currencyAndName,
+                oneDigit(item.currency.toDouble()) + " " + item.name)
         }
     }
 

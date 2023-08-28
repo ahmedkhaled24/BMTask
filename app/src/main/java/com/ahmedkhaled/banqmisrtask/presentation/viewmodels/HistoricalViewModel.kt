@@ -12,7 +12,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HistoricalViewModel @Inject constructor(private val historicalDataUseCase: HistoricalDataUseCase) : ViewModel() {
+class HistoricalViewModel @Inject constructor(private val historicalDataUseCase: HistoricalDataUseCase) :
+    ViewModel() {
 
     private val _historicalDataState: MutableLiveData<Resource<CurrenciesModel>> = MutableLiveData()
     val historicalData: LiveData<Resource<CurrenciesModel>> = _historicalDataState

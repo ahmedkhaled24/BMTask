@@ -4,7 +4,6 @@ import android.util.Log
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesItems
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesModel
 import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesNames
-import com.ahmedkhaled.banqmisrtask.data.model.custom.CustomCurrenciesModel
 import com.ahmedkhaled.banqmisrtask.data.model.response.LatestCurrenciesResponse
 import com.ahmedkhaled.banqmisrtask.data.model.response.Rates
 import com.ahmedkhaled.banqmisrtask.domain.repository.CurrenciesApIRepo
@@ -21,11 +20,9 @@ class LatestCurrenciesUseCase @Inject constructor(private val repository: Curren
         try {
             emit(Resource.Loading())
             val response = repository.latestCurrencies()
-            Log.d(TAG, "invoke: ${response.rates.USD}")
-            if (response.success){
-//                emit(Resource.Success(data = fillLatestCurrenciesResponse(response)))
+            if (response.success)
                 emit(Resource.Success(data = fillCurrenciesData(response)))
-            } else
+            else
                 emit(Resource.Error("Something went wrong"))
         } catch (e: HttpException) {
             Log.d(TAG, "error HttpException: ${e.message}")
