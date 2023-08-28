@@ -16,6 +16,9 @@ import javax.inject.Inject
 class LatestCurrenciesViewModel @Inject constructor(private val latestCurUseCase: LatestCurrenciesUseCase)
     : ViewModel() {
 
+    var savePositionSpinnerItemOne: Int = 0
+    var savePositionSpinnerItemTwo: Int = 1
+
     private val _latestCurrenciesState: MutableLiveData<Resource<CurrenciesModel>> =
         MutableLiveData()
     val latestCurrenciesData: LiveData<Resource<CurrenciesModel>> = _latestCurrenciesState

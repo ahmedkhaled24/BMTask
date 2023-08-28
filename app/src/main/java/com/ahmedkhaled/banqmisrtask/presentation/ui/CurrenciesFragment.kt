@@ -30,8 +30,6 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     private val viewModel: LatestCurrenciesViewModel by viewModels()
     private var valueFirstSelectedItem = 1.0
     private var valueSecondSelectedItem = 1.0
-    private var positionSpinnerItemOne: Int? = null
-    private var positionSpinnerItemTwo: Int? = null
     private var nameFirstCurrency: String = ""
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -45,23 +43,16 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         initResponseApi()
 
         binding.replaceIconIv.setOnClickListener {
-//            binding.replaceIconIv.rotation = 180f
             binding.replaceIconIv.startAnimation(AnimationUtils.loadAnimation(requireContext(), R.anim.rotate))
             replaceSpinners()
         }
 
         binding.btnDetails.setOnClickListener {
             findNavController().navigate(CurrenciesFragmentDirections.actionCurrenciesFragmentToHistoricalFragment(
-                nameFirstCurrency, positionSpinnerItemOne!!, positionSpinnerItemTwo!!))
+                nameFirstCurrency, viewModel.savePositionSpinnerItemOne, viewModel.savePositionSpinnerItemTwo))
         }
     }
 
-//    private fun observeOnSelectedItemSpinnerFrom() {
-//        viewModel.selectedItem.observe(viewLifecycleOwner) { item ->
-//            binding.editTextFromCurrency.setText("1")
-//            binding.editTextToCurrency.hint = (item.rate.toString())
-//        }
-//    }
 
     private fun initResponseApi() {
         viewModel.latestCurrenciesData.observe(viewLifecycleOwner) {
@@ -90,20 +81,21 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
         val adapter1 = SpinnerFromAdapter(requireContext(), data)
         binding.spinnerFromCurrency.adapter = adapter1
         binding.spinnerFromCurrency.onItemSelectedListener = this
+        binding.spinnerFromCurrency.setSelection(viewModel.savePositionSpinnerItemOne)
     }
 
     private fun configSpinnerTo(data: MutableList<CurrenciesItems>) {
         val adapter2 = SpinnerToAdapter(requireContext(), data)
         binding.spinnerToCurrency.adapter = adapter2
         binding.spinnerToCurrency.onItemSelectedListener = this
-        binding.spinnerFromCurrency.setSelection(1)
+        binding.spinnerToCurrency.setSelection(viewModel.savePositionSpinnerItemTwo)
     }
 
 
     override fun onItemSelected(parent: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
         when(parent?.id){
             R.id.spinnerFromCurrency -> {
-                positionSpinnerItemOne = position
+                viewModel.savePositionSpinnerItemOne = position
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
                 nameFirstCurrency = item.name
                 valueFirstSelectedItem = item.rate
@@ -114,7 +106,7 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
             }
 
             R.id.spinnerToCurrency -> {
-                positionSpinnerItemTwo = position
+                viewModel.savePositionSpinnerItemTwo = position
                 val item: CurrenciesItems = parent.selectedItem as CurrenciesItems
                 valueSecondSelectedItem = item.rate
                 if (!binding.editTextFromCurrency.text.isNullOrEmpty()){
@@ -172,8 +164,8 @@ class CurrenciesFragment : Fragment(), AdapterView.OnItemSelectedListener {
     }
 
     private fun replaceSpinners(){
-        binding.spinnerFromCurrency.setSelection(positionSpinnerItemTwo!!)
-        binding.spinnerToCurrency.setSelection(positionSpinnerItemOne!!)
+        binding.spinnerFromCurrency.setSelection(viewModel.savePositionSpinnerItemTwo)
+        binding.spinnerToCurrency.setSelection(viewModel.savePositionSpinnerItemOne)
     }
 
     private fun showProgressOrHide(status: Boolean) {
