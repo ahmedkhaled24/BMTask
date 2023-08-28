@@ -11,9 +11,8 @@ import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import com.ahmedkhaled.banqmisrtask.R
-import com.ahmedkhaled.banqmisrtask.presentation.ui.DataLast3Days
+import com.ahmedkhaled.banqmisrtask.data.model.custom.DataLast3Days
 import com.ahmedkhaled.banqmisrtask.utils.ConvertDateFormat
-import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing
 import com.ahmedkhaled.banqmisrtask.utils.NumberProcessing.oneDigit
 
 
@@ -48,7 +47,7 @@ class Last3DaysAdapter : RecyclerView.Adapter<Last3DaysAdapter.Last3DaysViewHold
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Last3DaysViewHolder {
         context = parent.context
-        return Last3DaysViewHolder(LayoutInflater.from(context).inflate(R.layout.last_days_item, parent, false))
+        return Last3DaysViewHolder(LayoutInflater.from(context).inflate(R.layout.currency_item, parent, false))
     }
 
     override fun getItemCount(): Int {

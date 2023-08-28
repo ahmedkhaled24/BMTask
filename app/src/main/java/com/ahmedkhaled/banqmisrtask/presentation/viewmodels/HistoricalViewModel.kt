@@ -8,6 +8,7 @@ import com.ahmedkhaled.banqmisrtask.data.model.custom.CurrenciesModel
 import com.ahmedkhaled.banqmisrtask.domain.usecases.HistoricalDataUseCase
 import com.ahmedkhaled.banqmisrtask.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 

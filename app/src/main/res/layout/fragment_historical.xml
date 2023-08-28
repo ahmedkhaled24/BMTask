@@ -82,7 +82,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/_10sdp"
-                            tools:listitem="@layout/last_days_item"
+                            tools:listitem="@layout/currency_item"
                             tools:itemCount="3"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
                     </LinearLayout>
@@ -130,7 +130,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_marginTop="@dimen/_10sdp"
-                            tools:listitem="@layout/last_days_item"
+                            tools:listitem="@layout/currency_item"
                             tools:itemCount="6"
                             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
                     </LinearLayout>

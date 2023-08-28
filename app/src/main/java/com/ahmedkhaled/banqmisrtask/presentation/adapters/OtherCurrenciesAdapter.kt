@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.ahmedkhaled.banqmisrtask.R
-import com.ahmedkhaled.banqmisrtask.presentation.ui.DataOtherCurrencies
+import com.ahmedkhaled.banqmisrtask.data.model.custom.DataOtherCurrencies
 
 
 class OtherCurrenciesAdapter : RecyclerView.Adapter<OtherCurrenciesAdapter.OtherCurrenciesViewHolder>() {
@@ -41,7 +41,7 @@ class OtherCurrenciesAdapter : RecyclerView.Adapter<OtherCurrenciesAdapter.Other
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OtherCurrenciesViewHolder {
         return OtherCurrenciesViewHolder(LayoutInflater.from(parent.context)
-                    .inflate(R.layout.last_days_item, parent, false))
+                    .inflate(R.layout.currency_item, parent, false))
     }
 
     override fun getItemCount(): Int {
